@@ -38,6 +38,7 @@ const formTodo = ref({
 const route = useRoute();
 const submitForm = () => {
   storeTask.editTodoInTask(route.params.id, formTodo.value);
+  formTodo.value = { description: "" };
 };
 watch(
   () => props.todo,

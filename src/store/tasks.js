@@ -66,8 +66,6 @@ export default function () {
   };
   // редактируем дело
   const editTodoInTask = (taskId, payloadTask) => {
-    console.log(taskId, payloadTask);
-    console.log("id" in payloadTask);
     tasks.value = tasks.value.map((task) => {
       if (Number(task.id) === Number(taskId)) {
         // если id отстутствуем тогда добавим дело как новое
@@ -75,7 +73,6 @@ export default function () {
           payloadTask.id = generateId();
           payloadTask.done = false;
           task.todos.push(payloadTask);
-          console.log(task);
           return task;
         }
         const updatedTodos = task.todos.map((todo) => {
