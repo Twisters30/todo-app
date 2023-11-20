@@ -1,21 +1,33 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home.vue";
+import TodoList from "@/views/TodoList";
+import PageTask from "@/views/PageTask";
+import PageNotFound from "@/views/PageNotFound";
+import useStoreTasks from "@/store/tasks";
 
+const storeTasks = useStoreTasks();
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home,
+    name: "TodoList",
+    component: TodoList,
   },
   {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: function () {
-      return import(/* webpackChunkName: "about" */ "../views/About.vue");
+    path: "/task/:id",
+    name: "PageTask",
+    component: PageTask,
+    props: true,
+    beforeEnter(to) {
+      const id = parseInt(to.params.id);
+      const exist = storeTasks.getTaskById(id);
+      if (!exist) {
+        return { redirect: "/" };
+      }
     },
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "PageNotFound",
+    component: PageNotFound,
   },
 ];
 
