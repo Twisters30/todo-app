@@ -3,25 +3,30 @@
     <main>
       <button-create data-bs-toggle="modal" data-bs-target="#baseModal" />
       <ul class="task__list p-0">
-        <task-preview-item v-for="task in tasks" :key="task.id" :task="task" />
+        <task-preview-item
+          v-for="todo in todos"
+          :key="todo.id"
+          :todo="todo"
+          @deleteTodo="storeTodos.deleteTodo"
+        />
       </ul>
       <base-modal>
-        <form-create-task />
+        <form-create-task @createTodo="storeTodos.createTodo" />
       </base-modal>
-      <h2 v-if="!storeTasks.getTasks.value.value.length">Задач нет...</h2>
+      <h2 v-if="!todos.length">Задач нет</h2>
     </main>
   </div>
 </template>
 
-<script setup>
-import TaskPreviewItem from "@/components/task/TaskPreviewItem";
-import useStoreTasks from "@/store/tasks";
-import ButtonCreate from "@/components/buttons/ButtonCreate";
-import BaseModal from "@/components/BaseModal";
-import FormCreateTask from "@/components/forms/FormCreateTask";
+<script setup lang="ts">
+import TaskPreviewItem from "@/components/task/TaskPreviewItem.vue";
+import { useTodoStore } from "@/store/todos.ts";
+import ButtonCreate from "@/components/buttons/ButtonCreate.vue";
+import BaseModal from "@/components/BaseModal.vue";
+import FormCreateTask from "@/components/forms/FormCreateTodo.vue";
+import { storeToRefs } from "pinia";
 
-const storeTasks = useStoreTasks();
-const tasks = storeTasks.getTasks.value;
-console.log(storeTasks.getTasks.value.value);
+const storeTodos = useTodoStore();
+const { todos } = storeToRefs(storeTodos);
 </script>
 <style scoped lang="scss"></style>

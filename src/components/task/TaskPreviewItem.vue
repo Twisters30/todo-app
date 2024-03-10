@@ -1,43 +1,35 @@
 <template>
   <li class="task__container main-hover">
-    <div class="task__title">{{ task.title }}</div>
+    <div class="task__title">{{ todo.title }}</div>
     <div class="task__body">
       <ol class="task__todo-preview">
-        <li v-for="todo in task.todos" :key="todo.id" class="task__todo-item">
-          {{ todo.description }}
+        <li v-for="task in todo.tasks" :key="task.id" class="task__todo-item">
+          {{ task.description }}
         </li>
       </ol>
       <div class="control__btn-group">
-        <router-link :to="{ name: `PageTask`, params: { id: task.id } }">
+        <router-link :to="{ name: `PageTodo`, params: { id: todo.id } }">
           <button-edit />
         </router-link>
-        <button-delete @click="deleteTask" />
+        <button-delete @click="$emit('deleteTodo', todo.id)" />
       </div>
     </div>
   </li>
 </template>
 
-<script setup>
-import { defineProps } from "vue";
+<script setup lang="ts">
+import { defineProps, defineEmits } from "vue";
 import { RouterLink } from "vue-router";
-import ButtonEdit from "@/components/buttons/ButtonEdit";
-import ButtonDelete from "@/components/buttons/ButtonDelete";
-import useStoreTask from "@/store/tasks";
-import confirm from "@/helper/confirm";
+import ButtonEdit from "@/components/buttons/ButtonEdit.vue";
+import ButtonDelete from "@/components/buttons/ButtonDelete.vue";
 
-const props = defineProps({
-  task: {
+defineProps({
+  todo: {
     type: Object,
     required: true,
   },
 });
-const storeTask = useStoreTask();
-const deleteTask = async () => {
-  const resultConfirm = await confirm("Вы уверенны?");
-  if (resultConfirm) {
-    storeTask.deleteTask(props.task.id);
-  }
-};
+defineEmits(["deleteTodo"]);
 </script>
 
 <style scoped lang="scss">

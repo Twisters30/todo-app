@@ -1,0 +1,127 @@
+<template>
+  <form novalidate @submit.prevent="submitForm">
+    <div class="mb-3">
+      <label class="form-label">Название задачи</label>
+      <input
+        v-model="title"
+        v-bind="titleAttrs"
+        placeholder="ведите задачу"
+        type="text"
+        class="form-control"
+      />
+      <span class="error-field">
+        {{ errors.title }}
+      </span>
+    </div>
+    <ul class="mb-3">
+      <li v-for="(task, i) in fields" :key="i">
+        <label class="form-label">Название дела</label>
+        <div class="todo__input-row">
+          <div class="d-flex flex-column flex-grow-1">
+            <div class="d-flex">
+              <input
+                v-model="task.value.description"
+                placeholder="ведите дело"
+                type="text"
+                class="form-control"
+              />
+              <button
+                type="button"
+                class="btn"
+                @click.stop="removeTask(task.id)"
+              >
+                X
+              </button>
+            </div>
+            <span class="error-field">
+              {{ errors[`tasks[${i}].description`] }}
+            </span>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <div class="control__btn-group">
+      <button
+        @click.stop="clickAddTask"
+        type="button"
+        class="btn btn-primary mb-3"
+      >
+        добавить дело +
+      </button>
+      <button-delete class="mb-3" @click.stop="resetForm"
+        >очистить форму
+      </button-delete>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        Закрыть
+      </button>
+      <button
+        :disabled="!(meta.dirty && meta.valid)"
+        data-bs-dismiss="modal"
+        type="submit"
+        class="btn btn-primary"
+      >
+        Создать задачу
+      </button>
+    </div>
+  </form>
+</template>
+
+<script setup>
+import { useForm, useFieldArray, useResetForm } from "vee-validate";
+import { v4 as uuidv4 } from "uuid";
+import { computed, defineEmits } from "vue";
+import { toTypedSchema } from "@vee-validate/yup";
+import * as yap from "yup";
+import ButtonDelete from "@/components/buttons/ButtonDelete";
+
+const emits = defineEmits(["createTodo"]);
+const { handleSubmit, defineField, errors, meta } = useForm({
+  initialValues: {
+    title: "",
+    tasks: [],
+  },
+  validationSchema: computed(() =>
+    toTypedSchema(
+      yap.object({
+        title: yap.string().required("запоните поле"),
+        tasks: yap.array(
+          yap.object({
+            description: yap.string().required("запоните поле"),
+          })
+        ),
+      })
+    )
+  ),
+});
+const { remove, push, fields } = useFieldArray("tasks");
+const [title, titleAttrs] = defineField("title");
+const resetForm = useResetForm();
+// создаёт новою задачу
+const clickAddTask = () => {
+  push({ id: uuidv4() });
+};
+const submitForm = handleSubmit((values) => {
+  console.log(values);
+  emits("createTodo", { id: uuidv4(), ...values });
+  resetForm();
+});
+
+// удалить не нужное дело по клику на крестик
+const removeTask = (taskId) => {
+  remove(taskId);
+};
+// очистка формы
+</script>
+
+<style scoped lang="scss">
+ul {
+  padding: 0;
+}
+.todo {
+  &__input-row {
+    display: flex;
+  }
+}
+</style>

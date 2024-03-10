@@ -1,36 +1,46 @@
 <template>
-  <li class="todo__item main-hover">
+  <li @click="toggleCheckbox" class="todo__item main-hover">
     <div class="form-check form-check-inline todo__description">
       <input
-        :checked="todo.done"
-        @change="$emit('editTodo', { ...todo, done: !todo.done })"
+        ref="checkboxRef"
+        :checked="task.done"
+        @change="toggleCheckbox($event.target.checked)"
         class="form-check-input"
         type="checkbox"
         id="inlineCheckbox1"
       />
-      {{ todo.description }}
+      {{ task.description }}
     </div>
     <div class="control__btn-group">
       <button-edit
-        @click="$emit('editDescriptionTodo', todo)"
+        @click.stop="$emit('editDescriptionTodo', task)"
         data-bs-toggle="modal"
         data-bs-target="#baseModal"
       />
-      <button-delete @click="$emit('deleteTodo', props.todo.id)" />
+      <button-delete @click.stop="$emit('deleteTodo', $props.task.id)" />
     </div>
   </li>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import { defineProps, defineEmits, ref } from "vue";
 import ButtonEdit from "@/components/buttons/ButtonEdit";
 import ButtonDelete from "@/components/buttons/ButtonDelete";
-defineEmits(["deleteTodo", "editTodo", "editDescriptionTodo"]);
+const emits = defineEmits(["deleteTodo", "changeState", "editDescriptionTodo"]);
 const props = defineProps({
-  todo: {
+  task: {
     type: Object,
   },
 });
+const checkboxRef = ref(null);
+const toggleCheckbox = (done) => {
+  if (checkboxRef.value) {
+    emits("changeState", {
+      ...props.task,
+      done: typeof done === "boolean" ? done : !checkboxRef.value.checked,
+    });
+  }
+};
 </script>
 
 <style lang="scss">
