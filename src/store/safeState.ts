@@ -5,7 +5,8 @@ export const useLocalStore = () => {
     localStorage.setItem(key, JSON.stringify(data));
   };
   const getLocalStore = (key: "todos") => {
-    const result = JSON.parse(localStorage.getItem(key) || "");
+    const jsonData = localStorage.getItem(key);
+    const result = jsonData ? JSON.parse(jsonData) : jsonData;
     if (!result) {
       return [];
     } else {

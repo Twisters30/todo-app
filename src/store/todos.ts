@@ -1,7 +1,8 @@
 import { ref, toRef } from "vue";
 import { defineStore } from "pinia";
-import { useLocalStore } from "@/store/safeState.ts";
+import { useLocalStore } from "@/store/safeState";
 import type { Todo, Task } from "@/types/todo";
+import router from "@/router";
 
 export const useTodoStore = defineStore("todos", () => {
   const { getLocalStore, setLocalStore } = useLocalStore();
@@ -48,6 +49,7 @@ export const useTodoStore = defineStore("todos", () => {
       }
       return todo;
     });
+    clearEmptyTodos();
     setLocalStore("todos", todos.value);
   };
   // редактируем дело
@@ -68,6 +70,29 @@ export const useTodoStore = defineStore("todos", () => {
       return task;
     });
   };
+  const updateTodoTitle = ({
+    id,
+    title,
+  }: {
+    id: Todo["id"];
+    title: Todo["title"];
+  }) => {
+    todos.value = todos.value.map((todo) => {
+      if (todo.id === id) {
+        todo.title = title;
+      }
+      return todo;
+    });
+    setLocalStore("todos", todos.value);
+  };
+  const clearEmptyTodos = () => {
+    const todosCount = todos.value.length;
+    todos.value = todos.value.filter((todo) => todo.tasks.length);
+    if (todosCount !== todos.value.length) {
+      router.push({ name: "TodoList" });
+    }
+    setLocalStore("todos", todos.value);
+  };
   return {
     todos,
     deleteTodo,
@@ -77,5 +102,6 @@ export const useTodoStore = defineStore("todos", () => {
     deleteTaskInTodo,
     updateTodos,
     updateTaskInTodo,
+    updateTodoTitle,
   };
 });

@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
 import TaskPreviewItem from "@/components/task/TaskPreviewItem.vue";
-import { useTodoStore } from "@/store/todos.ts";
+import { useTodoStore } from "@/store/todos";
 import ButtonCreate from "@/components/buttons/ButtonCreate.vue";
 import BaseModal from "@/components/BaseModal.vue";
 import FormCreateTask from "@/components/forms/FormCreateTodo.vue";
@@ -29,4 +29,3 @@ import { storeToRefs } from "pinia";
 const storeTodos = useTodoStore();
 const { todos } = storeToRefs(storeTodos);
 </script>
-<style scoped lang="scss"></style>

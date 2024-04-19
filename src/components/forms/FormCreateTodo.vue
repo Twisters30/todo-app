@@ -103,7 +103,6 @@ const clickAddTask = () => {
   push({ id: uuidv4() });
 };
 const submitForm = handleSubmit((values) => {
-  console.log(values);
   emits("createTodo", { id: uuidv4(), ...values });
   resetForm();
 });

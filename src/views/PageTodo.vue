@@ -2,7 +2,26 @@
   <div v-if="todo" class="container">
     <main>
       <button-navigation class="mb-3" />
-      <h2 class="page-title main-title text-center">{{ todo.title }}</h2>
+      <div class="page-title__wrapper align-items-baseline">
+        <base-input
+          :is-show-label="false"
+          v-if="isEditTitle"
+          :model-value="todo?.title"
+          @update="updateTaskTitle"
+        />
+        <h2 v-else class="page-title main-title text-center">
+          {{ todo?.title }}
+        </h2>
+        <button
+          :disabled="!todo?.title"
+          v-if="isEditTitle"
+          @click="hideEditTitle"
+          class="btn btn-primary"
+        >
+          подтвердить
+        </button>
+        <button-edit v-else @click="showEditTitle">редактировать</button-edit>
+      </div>
       <button-create data-bs-toggle="modal" data-bs-target="#addTask"
         >Добавить дело
       </button-create>
@@ -12,7 +31,7 @@
           @deleteTodo="deleteTask"
           @changeState="dispatchTask"
           v-for="task in todo.tasks"
-          :key="task.id"
+          :key="task?.id"
           :task="task"
         />
       </ul>
@@ -29,8 +48,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { useTodoStore } from "@/store/todos.ts";
+import { computed, onBeforeUpdate, ref } from "vue";
+import { useTodoStore } from "@/store/todos";
 import TodoItem from "@/components/task/TodoItem.vue";
 import ButtonCreate from "@/components/buttons/ButtonCreate.vue";
 import ButtonNavigation from "@/components/buttons/ButtonNavigation.vue";
@@ -39,7 +58,10 @@ import FormTask from "@/components/forms/FormTask.vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { Task, Todo } from "@/types/todo";
+import ButtonEdit from "@/components/buttons/ButtonEdit.vue";
+import BaseInput from "@/components/BaseInput.vue";
 
+const isEditTitle = ref(false);
 const route = useRoute();
 const todo = computed<Todo>(
   () => todos.value.find((todo) => todo.id === route.params.id) as Todo
@@ -67,6 +89,28 @@ const submitTaskFormEdit = (payloadTask: Task) => {
 const submitTaskFormCreate = (payloadTask: Task) => {
   storeTodos.addTask(todo.value, payloadTask);
 };
+const showEditTitle = () => {
+  isEditTitle.value = true;
+};
+const hideEditTitle = () => {
+  isEditTitle.value = false;
+};
+const updateTaskTitle = (title: Todo["title"]) => {
+  storeTodos.updateTodoTitle({ id: todo.value.id, title });
+};
+onBeforeUpdate(() => {
+  if (todo.value?.title === "") {
+    updateTaskTitle("Название задачи");
+  }
+});
 </script>
-
-<style scoped></style>
+<style lang="scss">
+.page-title {
+  &__wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+}
+</style>
