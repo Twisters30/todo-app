@@ -1,0 +1,23 @@
+.btn-text-slide:hover{cursor: pointer}
+.btn-text-slide {
+  background: transparent; outline: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-text-slide:hover:before{opacity: 1; transform: translate(0,0);}
+.btn-text-slide:before{
+  content: attr(data-hover);
+  position: absolute;
+  width: 100%;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translate(-100%,0);
+  transition: all .3s ease-in-out;
+}
+/*.btn-text-slide div (.btn-text-slide text before hover)*/
+.btn-text-slide:hover div{opacity: 0; transform: translate(100%,0)}
+.btn-text-slide div{
+  text-transform: uppercase;
+  transition: all .3s ease-in-out;
+}
