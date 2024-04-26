@@ -28,7 +28,7 @@ ul {
 .control{
   &__btn-group {
     display: flex;
-    gap: 15px;
+    gap: 10px;
     flex-direction: column;
     @media (max-width: 768px) {
       flex-direction: row;

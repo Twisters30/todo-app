@@ -9,4 +9,5 @@ export type Todo = {
   title: string;
   tasks: Task[];
 };
+
 export type TKeyStore = "todos";

@@ -42,6 +42,7 @@
       <button @click.stop="clickAddTask" type="button" class="btn btn-primary">
         добавить дело в список +
       </button>
+      <span class="error-field">{{ errors.tasks }}</span>
       <button-delete class="mb-3" @click.stop="resetForm"
         >очистить форму
       </button-delete>
@@ -74,17 +75,19 @@ const emits = defineEmits(["createTodo"]);
 const { handleSubmit, defineField, errors, meta } = useForm({
   initialValues: {
     title: "",
-    tasks: [],
+    tasks: [{ description: "" }],
   },
   validationSchema: computed(() =>
     toTypedSchema(
       yap.object({
         title: yap.string().required("запоните поле"),
-        tasks: yap.array(
-          yap.object({
-            description: yap.string().required("запоните поле"),
-          })
-        ),
+        tasks: yap
+          .array(
+            yap.object({
+              description: yap.string().required("запоните поле"),
+            })
+          )
+          .min(1, "добавте дело"),
       })
     )
   ),
