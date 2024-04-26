@@ -1,14 +1,16 @@
 <template>
-  <li @click="toggleCheckbox" class="todo__item main-hover">
+  <li @click="toggleCheckbox" class="todo__item main-hover list__item">
     <div class="form-check form-check-inline todo__description">
-      <input
-        ref="checkboxRef"
-        :checked="task.done"
-        @change="toggleCheckbox($event.target.checked)"
-        class="form-check-input"
-        type="checkbox"
-        id="inlineCheckbox1"
-      />
+      <label class="todo__content-wrapper">
+        <input
+          ref="checkboxRef"
+          :checked="task.done"
+          @change="toggleCheckbox($event.target.checked)"
+          class="form-check-input"
+          type="checkbox"
+          id="inlineCheckbox1"
+        />
+      </label>
       {{ task.description }}
     </div>
     <div class="control__btn-group">
@@ -52,9 +54,14 @@ const toggleCheckbox = (done) => {
     padding: 15px;
     margin-bottom: 10px;
     border-radius: 5px;
+    @media (max-width: 664px) {
+      flex-direction: column;
+    }
   }
-  &__description {
+  div &__description {
     display: flex;
+    word-break: break-all;
+    margin-bottom: 10px;
   }
 }
 ul {

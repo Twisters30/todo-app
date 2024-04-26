@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-3">
+  <div>
     <label v-if="isShowLabel" class="form-label"
       ><slot>Название задачи</slot></label
     >

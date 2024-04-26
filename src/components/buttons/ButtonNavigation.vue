@@ -1,12 +1,17 @@
 <template>
-  <router-link :to="previousPage" class="btn btn-outline-dark">
-    <slot>назад</slot>
+  <router-link
+    :to="previousPage"
+    class="nav-btn btn btn-outline-dark btn__icon"
+  >
+    <arrow-left-icon />
+    <slot>Назад</slot>
   </router-link>
 </template>
 
 <script setup>
 import { useRouter, RouterLink } from "vue-router/dist/vue-router";
 import { computed } from "vue";
+import ArrowLeftIcon from "@/components/icons/ArrowLeftIcon.vue";
 
 const router = useRouter();
 
@@ -16,4 +21,8 @@ const previousPage = computed(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.nav-btn {
+  width: fit-content;
+}
+</style>

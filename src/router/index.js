@@ -1,7 +1,6 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import TodoList from "@/views/TodoList";
 import PageTask from "@/views/PageTodo";
-import PageNotFound from "@/views/PageNotFound";
 
 const routes = [
   {
@@ -17,13 +16,13 @@ const routes = [
   },
   {
     path: "/:pathMatch(.*)*",
-    name: "PageNotFound",
-    component: PageNotFound,
+    name: "redirect",
+    component: TodoList,
   },
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(),
   routes,
 });
 

@@ -1,6 +1,6 @@
 <template>
   <li class="task__container main-hover">
-    <div class="task__title">{{ todo.title }}</div>
+    <h3 class="task__title">{{ todo.title }}</h3>
     <div class="task__body">
       <ol class="task__todo-preview">
         <li v-for="task in todo.tasks" :key="task.id" class="task__todo-item">
@@ -9,7 +9,7 @@
       </ol>
       <div class="control__btn-group">
         <router-link :to="{ name: `PageTodo`, params: { id: todo.id } }">
-          <button-edit />
+          <button-link>К задачам</button-link>
         </router-link>
         <button-delete @click="$emit('deleteTodo', todo.id)" />
       </div>
@@ -20,15 +20,15 @@
 <script setup lang="ts">
 import { defineProps, defineEmits } from "vue";
 import { RouterLink } from "vue-router";
-import ButtonEdit from "@/components/buttons/ButtonEdit.vue";
 import ButtonDelete from "@/components/buttons/ButtonDelete.vue";
+import { Todo } from "@/types/todo";
+import ButtonLink from "@/components/buttons/ButtonLink.vue";
 
-defineProps({
-  todo: {
-    type: Object,
-    required: true,
-  },
-});
+interface Props {
+  todo: Todo;
+}
+
+defineProps<Props>();
 defineEmits(["deleteTodo"]);
 </script>
 
@@ -38,16 +38,25 @@ defineEmits(["deleteTodo"]);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
   }
   &__title {
+    text-align: center;
     font-size: 24px;
   }
   &__container {
     padding: 15px;
     margin-bottom: 15px;
     border-radius: 15px;
+    &:focus-within > ol {
+      display: block;
+    }
   }
   &__todo-preview {
+    width: 100%;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;

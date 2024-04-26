@@ -1,9 +1,9 @@
 <template>
   <div v-if="todo" class="container">
     <main>
-      <button-navigation class="mb-3" />
       <div class="page-title__wrapper align-items-baseline">
         <base-input
+          class="page-title__input"
           :is-show-label="false"
           v-if="isEditTitle"
           :model-value="todo?.title"
@@ -16,12 +16,19 @@
           :disabled="!todo?.title"
           v-if="isEditTitle"
           @click="hideEditTitle"
-          class="btn btn-primary"
+          class="btn btn-success"
         >
-          подтвердить
+          Подтвердить
         </button>
-        <button-edit v-else @click="showEditTitle">редактировать</button-edit>
+        <button-edit
+          class="w-fit"
+          v-else
+          @click="showEditTitle"
+          :show-text="false"
+          >Редактировать название</button-edit
+        >
       </div>
+      <button-navigation class="mb-3" />
       <button-create data-bs-toggle="modal" data-bs-target="#addTask"
         >Добавить дело
       </button-create>
@@ -106,11 +113,24 @@ onBeforeUpdate(() => {
 </script>
 <style lang="scss">
 .page-title {
+  margin-right: 10px;
+  @media (max-width: 500px) {
+    margin-right: 0;
+  }
   &__wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
+    margin-bottom: 1rem;
+    @media (max-width: 500px) {
+      flex-direction: column;
+    }
+  }
+  &__input {
+    margin-bottom: 1rem;
+    @media (max-width: 500px) {
+      width: 100%;
+    }
   }
 }
 </style>

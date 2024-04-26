@@ -1,7 +1,7 @@
 <template>
   <form novalidate @submit.prevent="submitForm">
     <div class="mb-3">
-      <label class="form-label">Название задачи</label>
+      <label class="form-label">Название списка задач</label>
       <input
         v-model="title"
         v-bind="titleAttrs"
@@ -17,36 +17,30 @@
       <li v-for="(task, i) in fields" :key="i">
         <label class="form-label">Название дела</label>
         <div class="todo__input-row">
-          <div class="d-flex flex-column flex-grow-1">
-            <div class="d-flex">
+          <div class="todo__outer-wrapper">
+            <div class="todo__wrapper-input">
               <input
                 v-model="task.value.description"
                 placeholder="ведите дело"
                 type="text"
                 class="form-control"
               />
-              <button
-                type="button"
-                class="btn"
-                @click.stop="removeTask(task.id)"
-              >
-                X
-              </button>
+              <span class="error-field">
+                {{ errors[`tasks[${i}].description`] }}
+              </span>
             </div>
-            <span class="error-field">
-              {{ errors[`tasks[${i}].description`] }}
-            </span>
+            <button-delete
+              class="todo__btn-delete"
+              @click.stop="removeTask(task.id)"
+              :show-text="false"
+            />
           </div>
         </div>
       </li>
     </ul>
     <div class="control__btn-group">
-      <button
-        @click.stop="clickAddTask"
-        type="button"
-        class="btn btn-primary mb-3"
-      >
-        добавить дело +
+      <button @click.stop="clickAddTask" type="button" class="btn btn-primary">
+        добавить дело в список +
       </button>
       <button-delete class="mb-3" @click.stop="resetForm"
         >очистить форму
@@ -121,6 +115,23 @@ ul {
 .todo {
   &__input-row {
     display: flex;
+    flex-direction: column;
+  }
+  &__outer-wrapper {
+    display: flex;
+    gap: 10px;
+  }
+  &__wrapper-input {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+    @media (max-width: 500px) {
+      //flex-direction: column;
+    }
+  }
+  &__btn-delete {
+    width: fit-content;
+    max-height: 38px;
   }
 }
 </style>
