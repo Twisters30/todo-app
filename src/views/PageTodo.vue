@@ -32,7 +32,7 @@
       <button-create data-bs-toggle="modal" data-bs-target="#addTask"
         >Добавить дело
       </button-create>
-      <ul class="todo__list">
+      <ul ref="el" class="todo__list">
         <todo-item
           @editDescriptionTodo="editTask"
           @deleteTodo="deleteTask"
@@ -67,6 +67,7 @@ import { storeToRefs } from "pinia";
 import { Task, Todo } from "@/types/todo";
 import ButtonEdit from "@/components/buttons/ButtonEdit.vue";
 import BaseInput from "@/components/BaseInput.vue";
+import { useDraggable, type UseDraggableReturn } from "vue-draggable-plus";
 
 const isEditTitle = ref(false);
 const route = useRoute();
@@ -82,10 +83,21 @@ const deleteTask = (taskId: Task["id"]) => {
     : route.params.id;
   storeTodos.deleteTaskInTodo(id, taskId);
 };
+const el = ref();
 
+const draggable = useDraggable<UseDraggableReturn>(el, todo.value.tasks, {
+  animation: 150,
+  onStart() {
+    console.log("start");
+  },
+  onUpdate() {
+    storeTodos.updateTodo({ ...todo.value, tasks: todo.value.tasks });
+  },
+});
+console.log(draggable);
 const dispatchTask = (payloadTask: Task) => {
   const updatedTasks = storeTodos.updateTaskInTodo(todo.value, payloadTask);
-  storeTodos.updateTodos({ ...todo.value, tasks: updatedTasks });
+  storeTodos.updateTodo({ ...todo.value, tasks: updatedTasks });
 };
 const editTask = (taskPayload: Task) => {
   currentTask.value = taskPayload;

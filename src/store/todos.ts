@@ -53,7 +53,7 @@ export const useTodoStore = defineStore("todos", () => {
     setLocalStore("todos", todos.value);
   };
   // редактируем дело
-  const updateTodos = (todoPayload: Todo) => {
+  const updateTodo = (todoPayload: Todo) => {
     todos.value = todos.value.map((todo) => {
       if (todoPayload.id === todo.id) {
         return todoPayload;
@@ -61,6 +61,10 @@ export const useTodoStore = defineStore("todos", () => {
       return todo;
     });
     setLocalStore("todos", todos.value);
+  };
+  const updateAllTodos = (todosPayload: Todo[]) => {
+    todos.value = todosPayload;
+    setLocalStore("todos", todosPayload);
   };
   const updateTaskInTodo = (todoPayload: Todo, taskPayload: Task) => {
     return todoPayload.tasks.map((task) => {
@@ -100,8 +104,9 @@ export const useTodoStore = defineStore("todos", () => {
     createTodo,
     addTask,
     deleteTaskInTodo,
-    updateTodos,
+    updateTodo,
     updateTaskInTodo,
     updateTodoTitle,
+    updateAllTodos,
   };
 });

@@ -21,7 +21,7 @@
             <div class="todo__wrapper-input">
               <input
                 v-model="task.value.description"
-                placeholder="ведите дело"
+                placeholder="введите дело"
                 type="text"
                 class="form-control"
               />
