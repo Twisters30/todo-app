@@ -13,6 +13,7 @@ export const useTodoStore = defineStore("todos", () => {
   };
   // создать новый ТОДО
   const createTodo = (payloadTodo: Todo) => {
+    console.log(payloadTodo, "create todo");
     todos.value.push(payloadTodo);
     setLocalStore("todos", todos.value);
   };

@@ -3,6 +3,7 @@
     <label class="form-label">Название дела</label>
     <div class="todo__input-row mb-3">
       <input
+        ref="refInput"
         required
         v-model="description"
         placeholder="ведите дело"
@@ -10,7 +11,7 @@
         class="form-control"
       />
     </div>
-    <div class="d-flex justify-content-between">
+    <div class="control__btn-group flex-column-reverse">
       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
         Закрыть
       </button>
@@ -38,12 +39,15 @@ const props = defineProps({
     default: () => ({ description: "" }),
   },
 });
+const refInput = ref<HTMLInputElement | null>(null);
 const description = ref(props.task.description);
 watch(
   () => props.task,
   (newTask) => {
-    console.log(newTask);
     description.value = newTask.description;
+    if (refInput.value && description.value) {
+      refInput.value.focus();
+    }
   }
 );
 const submitForm = () => {

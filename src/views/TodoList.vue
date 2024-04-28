@@ -1,15 +1,24 @@
 <template>
   <div class="container">
     <main>
-      <button-create data-bs-toggle="modal" data-bs-target="#baseModal" />
-      <ul ref="el" class="task__list p-0">
+      <button-create data-bs-toggle="modal" data-bs-target="#baseModal">
+        Создать новый список задач
+      </button-create>
+      <VueDraggable
+        tag="ul"
+        v-model="todos"
+        :animation="150"
+        handle=".handle"
+        class="task__list p-0"
+      >
         <task-preview-item
           v-for="todo in todos"
           :key="todo.id"
           :todo="todo"
           @deleteTodo="storeTodos.deleteTodo"
+          :show-icon-sorting="todos.length >= 2"
         />
-      </ul>
+      </VueDraggable>
       <base-modal>
         <form-create-task @createTodo="storeTodos.createTodo" />
       </base-modal>
@@ -25,19 +34,15 @@ import ButtonCreate from "@/components/buttons/ButtonCreate.vue";
 import BaseModal from "@/components/BaseModal.vue";
 import FormCreateTask from "@/components/forms/FormCreateTodo.vue";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
-import { useDraggable, type UseDraggableReturn } from "vue-draggable-plus";
+import { VueDraggable } from "vue-draggable-plus";
+import { watch } from "vue";
 
 const storeTodos = useTodoStore();
 const { todos } = storeToRefs(storeTodos);
-
-const el = ref();
-
-const draggable = useDraggable<UseDraggableReturn>(el, todos, {
-  animation: 150,
-  onUpdate() {
+watch(
+  () => todos.value,
+  () => {
     storeTodos.updateAllTodos(todos.value);
-  },
-});
-console.log(draggable);
+  }
+);
 </script>

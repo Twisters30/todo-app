@@ -32,16 +32,23 @@
       <button-create data-bs-toggle="modal" data-bs-target="#addTask"
         >Добавить дело
       </button-create>
-      <ul ref="el" class="todo__list">
+      <VueDraggable
+        tag="ul"
+        :animation="150"
+        handle=".handle"
+        v-model="todo.tasks"
+        class="todo__list"
+      >
         <todo-item
           @editDescriptionTodo="editTask"
           @deleteTodo="deleteTask"
           @changeState="dispatchTask"
-          v-for="task in todo.tasks"
+          :show-icon-sorting="todo.tasks.length >= 2"
+          v-for="task in todo?.tasks"
           :key="task?.id"
           :task="task"
         />
-      </ul>
+      </VueDraggable>
       <div>
         <base-modal>
           <form-task @submitForm="submitTaskFormEdit" :task="currentTask" />
@@ -55,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUpdate, ref } from "vue";
+import { computed, onBeforeUpdate, ref, watch } from "vue";
 import { useTodoStore } from "@/store/todos";
 import TodoItem from "@/components/task/TodoItem.vue";
 import ButtonCreate from "@/components/buttons/ButtonCreate.vue";
@@ -67,7 +74,7 @@ import { storeToRefs } from "pinia";
 import { Task, Todo } from "@/types/todo";
 import ButtonEdit from "@/components/buttons/ButtonEdit.vue";
 import BaseInput from "@/components/BaseInput.vue";
-import { useDraggable, type UseDraggableReturn } from "vue-draggable-plus";
+import { VueDraggable } from "vue-draggable-plus";
 
 const isEditTitle = ref(false);
 const route = useRoute();
@@ -83,20 +90,10 @@ const deleteTask = (taskId: Task["id"]) => {
     : route.params.id;
   storeTodos.deleteTaskInTodo(id, taskId);
 };
-const el = ref();
 
-const draggable = useDraggable<UseDraggableReturn>(el, todo.value.tasks, {
-  animation: 150,
-  onStart() {
-    console.log("start");
-  },
-  onUpdate() {
-    storeTodos.updateTodo({ ...todo.value, tasks: todo.value.tasks });
-  },
-});
-console.log(draggable);
 const dispatchTask = (payloadTask: Task) => {
   const updatedTasks = storeTodos.updateTaskInTodo(todo.value, payloadTask);
+  console.log(updatedTasks, "dis");
   storeTodos.updateTodo({ ...todo.value, tasks: updatedTasks });
 };
 const editTask = (taskPayload: Task) => {
@@ -122,12 +119,22 @@ onBeforeUpdate(() => {
     updateTaskTitle("Название задачи");
   }
 });
+watch(
+  () => todo?.value?.tasks,
+  () => {
+    if (todo?.value?.tasks) {
+      storeTodos.updateTodo({ ...todo.value, tasks: todo.value.tasks });
+    }
+  }
+);
 </script>
 <style lang="scss">
 .page-title {
   margin-right: 10px;
   @media (max-width: 500px) {
+    width: 100%;
     margin-right: 0;
+    text-align: center;
   }
   &__wrapper {
     display: flex;

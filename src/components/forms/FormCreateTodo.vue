@@ -5,7 +5,7 @@
       <input
         v-model="title"
         v-bind="titleAttrs"
-        placeholder="ведите задачу"
+        placeholder="введите задачу"
         type="text"
         class="form-control"
       />
@@ -75,7 +75,7 @@ const emits = defineEmits(["createTodo"]);
 const { handleSubmit, defineField, errors, meta } = useForm({
   initialValues: {
     title: "",
-    tasks: [{ description: "" }],
+    tasks: [{ description: "", id: uuidv4() }],
   },
   validationSchema: computed(() =>
     toTypedSchema(
@@ -85,6 +85,7 @@ const { handleSubmit, defineField, errors, meta } = useForm({
           .array(
             yap.object({
               description: yap.string().required("запоните поле"),
+              id: yap.string(),
             })
           )
           .min(1, "добавте дело"),
